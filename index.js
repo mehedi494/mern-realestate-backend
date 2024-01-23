@@ -1,12 +1,17 @@
-import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+
 import database from "./config/index.js";
+import process from "process";
+import router from "./app/routes/index.js";
+import golbalErrorsHandler from "./app/middleware/globalErrorHandler.js";
+
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// config eng file
+// config env file
 dotenv.config();
 
 // cors policy
@@ -16,12 +21,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-/* root url for testing server is alive or not  */
+/* ROUTES HERE */
+
+// test route
 app.get("/", (req, res) => {
-  res.send("Server are runnig ");
+  res.send("Server is running✅");
 });
 
+app.use("/api/v1", router);
+
+app.use(golbalErrorsHandler);
+
 app.listen(port, () => {
-  console.log("server running at", port);
+  // eslint-disable-next-line no-console
+  console.log("Server is running at", port);
   database();
 });
