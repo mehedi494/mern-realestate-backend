@@ -1,3 +1,5 @@
+import ApiError from "./ApiError.js";
+
 /* eslint-disable no-unused-vars */
 const golbalErrorsHandler = (error, req, res, next) => {
   // eslint-disable-next-line no-console
@@ -15,6 +17,11 @@ const golbalErrorsHandler = (error, req, res, next) => {
     statusCode = error.code;
     message=error.name
     errorMessages = error.message;
+  } else if (error instanceof ApiError) {
+    statusCode= error.statusCode
+    message=error?.message
+    errorMessages = error?.errorMessages;
+  
   } else if (error instanceof Error) {
     message=error?.name
     errorMessages = error?.message;
@@ -22,8 +29,8 @@ const golbalErrorsHandler = (error, req, res, next) => {
   // eslint-disable-next-line no-console
   console.log("❌ Error:", errorMessages);
   res.json({
-    status: false,
-    code: statusCode,
+    success: false,
+    statusCode,
     message,
     errorMessage: errorMessages,
   });
