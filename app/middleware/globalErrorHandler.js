@@ -27,7 +27,7 @@ const golbalErrorsHandler = (error, req, res, next) => {
     errorMessages = error?.message;
   }
   // eslint-disable-next-line no-console
-  console.log("❌ Error:", errorMessages);
+  console.log("❌ Error:", error);
   res.json({
     success: false,
     statusCode,

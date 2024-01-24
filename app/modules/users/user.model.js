@@ -16,6 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    avatar:{
+      type: String,
+      default:"https://cours-informatique-gratuit.fr/wp-content/uploads/2017/10/avatar.png"
+    }
   },
   { timestamps: true }
 );
