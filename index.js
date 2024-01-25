@@ -7,6 +7,7 @@ import database from "./config/database.js";
 import router from "./app/routes/index.js";
 import golbalErrorsHandler from "./app/middleware/globalErrorHandler.js";
 import { config } from "./config/env.js";
+import cookieParser  from "cookie-parser";
 
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(cors());
 // parse data to json format
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser())
 
 /* ROUTES HERE */
 

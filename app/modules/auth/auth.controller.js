@@ -57,22 +57,20 @@ export const googleSignIn = async (req, res, next) => {
         password: undefined,
       };
 
-      
-      
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
         .json(userWithoutPassword);
     } else {
       const generatedUserName =
-        req.body.name.split(" ").join("").toLowerCase() +
+        req.body.name.split(" ").join("-").toLowerCase() +
         Math.random().toString(36).slice(-5);
       const generatedPassword =
         Math.random(36).toString(36).slice(-8) +
         Math.random(36).toString(36).slice(-8);
       const hashedPassword = bcrypt.hashSync(generatedPassword, 12);
 
-      const newUser = User.create({
+      const newUser = new User.create({
         userName: generatedUserName,
         password: hashedPassword,
         email: req.body.email,
@@ -88,7 +86,7 @@ export const googleSignIn = async (req, res, next) => {
         password: undefined,
         ...newUser.toObject(),
       };
-     
+
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
