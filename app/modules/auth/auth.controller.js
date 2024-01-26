@@ -34,16 +34,22 @@ export const sign_in = async (req, res, next) => {
       ...validUser.toObject(),
       password: undefined,
     };
-    res
-      .cookie("access_token", token, { httpOnly: true })
-      .status(200)
-      .json(userWithoutPassword);
+    // console.log("token", token);
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + 100 * 24 * 60 * 60 * 1000
+      ),
+      // httpOnly: true,
+    };
+    res.cookie("access_token", token, cookieOptions);
+    res.status(200).json(userWithoutPassword);
   } catch (error) {
     next(error);
   }
 };
 export const googleSignIn = async (req, res, next) => {
   try {
+    
     const existUser = await User.findOne({ email: req.body.email });
     if (existUser) {
       const token = jwtHelpers.createToken(
@@ -56,11 +62,8 @@ export const googleSignIn = async (req, res, next) => {
         ...existUser.toObject(),
         password: undefined,
       };
-
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json(userWithoutPassword);
+      
+      res.cookie("access_token", token).status(200).json(userWithoutPassword);
     } else {
       const generatedUserName =
         req.body.name.split(" ").join("-").toLowerCase() +
@@ -70,7 +73,7 @@ export const googleSignIn = async (req, res, next) => {
         Math.random(36).toString(36).slice(-8);
       const hashedPassword = bcrypt.hashSync(generatedPassword, 12);
 
-      const newUser = new User.create({
+      const newUser = new User({
         userName: generatedUserName,
         password: hashedPassword,
         email: req.body.email,
@@ -83,14 +86,11 @@ export const googleSignIn = async (req, res, next) => {
         config.JWT_EXPIRES_IN
       );
       const userWithoutPassword = {
-        password: undefined,
         ...newUser.toObject(),
+        password: undefined,
       };
 
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json(userWithoutPassword);
+      res.cookie("access_token", token).status(200).json(userWithoutPassword);
     }
   } catch (error) {
     next(error);
