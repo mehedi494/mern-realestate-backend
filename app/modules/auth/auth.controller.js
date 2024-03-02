@@ -8,6 +8,11 @@ export const sign_up = async (req, res, next) => {
   // eslint-disable-next-line no-console
   try {
     const { userName, password, email } = req.body;
+
+    const existUser = await User.findOne({ email });
+    if (existUser) {
+      throw new ApiError(400, "User already exist");
+    }
     const hashedPassword = bcrypt.hashSync(password, 12);
     const newUser = new User({ userName, email, password: hashedPassword });
     await newUser.save();
@@ -19,26 +24,26 @@ export const sign_up = async (req, res, next) => {
 export const sign_in = async (req, res, next) => {
   try {
     const { password, email } = req.body;
-    const validUser = await User.findOne({ email });
-    if (!validUser) throw new ApiError(400, "User not found");
-    const validPassword = bcrypt.compareSync(password, validUser.password);
+    // console.log({email});
+    const user = await User.findOne({ email: email });
+   
+    if (!user) throw new ApiError(400, "User not found");
+    const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) throw new ApiError(401, "Wrong credentials!");
 
     const token = jwtHelpers.createToken(
-      { id: validUser._id },
+      { id: user._id },
       config.JWT_SECRET,
       config.JWT_EXPIRES_IN
     );
 
     const userWithoutPassword = {
-      ...validUser.toObject(),
+      ...user.toObject(),
       password: undefined,
     };
     // console.log("token", token);
     const cookieOptions = {
-      expires: new Date(
-        Date.now() + 100 * 24 * 60 * 60 * 1000
-      ),
+      expires: new Date(Date.now() + 100 * 24 * 60 * 60 * 1000),
       // httpOnly: true,
     };
     res.cookie("access_token", token, cookieOptions);
@@ -49,7 +54,6 @@ export const sign_in = async (req, res, next) => {
 };
 export const googleSignIn = async (req, res, next) => {
   try {
-    
     const existUser = await User.findOne({ email: req.body.email });
     if (existUser) {
       const token = jwtHelpers.createToken(
@@ -62,7 +66,7 @@ export const googleSignIn = async (req, res, next) => {
         ...existUser.toObject(),
         password: undefined,
       };
-      
+
       res.cookie("access_token", token).status(200).json(userWithoutPassword);
     } else {
       const generatedUserName =

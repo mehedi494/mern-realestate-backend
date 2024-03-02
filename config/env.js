@@ -6,5 +6,5 @@ export const config = {
   DB_URL: process.env.DB_URL,
   PORT: process.env.PORT,
   JWT_SECRET: process.env.JWT_SECRET,
-  JWT_EXPIRES_IN: process.env.EXPIRE_IN,
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
 };
