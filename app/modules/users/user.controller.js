@@ -8,16 +8,16 @@ export const updateUser = async (req, res, next) => {
   try {
     // Token checking
 
-    const token = req?.cookies?.access_token;
-    if (!token) throw new ApiError(401, "unauthorized");
-    const verifiedToken = jwtHelpers.verifyToken(token, config.JWT_SECRET);
-    if (!verifiedToken) {
-      throw new ApiError(402, "access unauthorized");
-    }
+    // const token = req?.cookies?.access_token;
+    // if (!token) throw new ApiError(401, "unauthorized");
+    // const verifiedToken = jwtHelpers.verifyToken(token, config.JWT_SECRET);
+    // if (!verifiedToken) {
+    //   throw new ApiError(402, "access unauthorized");
+    // }
 
-    if (verifiedToken?.id !== req.params?.id) {
-      throw new ApiError(403, "forbidden");
-    }
+    // if (verifiedToken?.id !== req.params?.id) {
+    //   throw new ApiError(403, "forbidden");
+    // }
 
     //  hashing password
     const password = req?.body?.password;
