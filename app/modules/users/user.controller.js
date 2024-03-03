@@ -26,6 +26,7 @@ export const updateUser = async (req, res, next) => {
       req.body.password = hashedPassword;
     }
     // update after token checking and hashed password
+
     const updateUser = await User.findByIdAndUpdate(
       req.params.id,
       {
@@ -39,8 +40,10 @@ export const updateUser = async (req, res, next) => {
         new: true,
       }
     );
+    // console.log(updateUser);
     // eslint-disable-next-line no-unused-vars
     const { password: pass, ...rest } = updateUser._doc;
+
     res.status(200).json(rest);
   } catch (error) {
     next(error);
@@ -65,6 +68,7 @@ export const deleteUser = async (req, res, next) => {
     if (!user) {
       throw new ApiError(400, "User not found");
     }
+    res.clearCookie("access_token");
     res.status(200).json({ success: true, statusCode: 200, message: user });
   } catch (error) {
     next(error);

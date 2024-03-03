@@ -26,7 +26,7 @@ export const sign_in = async (req, res, next) => {
     const { password, email } = req.body;
     // console.log({email});
     const user = await User.findOne({ email: email });
-   
+
     if (!user) throw new ApiError(400, "User not found");
     const validPassword = bcrypt.compareSync(password, user.password);
     if (!validPassword) throw new ApiError(401, "Wrong credentials!");
@@ -96,6 +96,18 @@ export const googleSignIn = async (req, res, next) => {
 
       res.cookie("access_token", token).status(200).json(userWithoutPassword);
     }
+  } catch (error) {
+    next(error);
+  }
+};
+export const signOut = async (req, res, next) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "User has been loged out",
+    });
   } catch (error) {
     next(error);
   }
