@@ -6,6 +6,7 @@ router.get("/", (req, res) => {
   res.json({ messsage: "from user " });
 });
 router.post("/update/:id", verifieUser, updateUser);
-router.delete("/delete/:id", deleteUser);
+router.delete("/delete/:id",verifieUser, deleteUser);
+
 
 export const userRoutes = router;

@@ -13,11 +13,11 @@ const listingSchema = new Schema(
     address: { type: String, required: true },
     regularPrice: { type: Number, required: true },
     discountPrice: { type: Number, required: true },
-    bathroom: {
+    bathrooms: {
       type: Number,
       required: true,
     },
-    bedroom: {
+    bedrooms: {
       type: Number,
       required: true,
     },
