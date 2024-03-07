@@ -3,6 +3,7 @@ import { config } from "../../../config/env.js";
 import { jwtHelpers } from "../../../helper/jwt.js";
 import ApiError from "../../middleware/ApiError.js";
 import User from "./user.model.js";
+import Listing from "../listing/listing.model.js";
 
 export const updateUser = async (req, res, next) => {
   try {
@@ -74,3 +75,30 @@ export const deleteUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getUserListing = async (req, res, next) => {
+  try {
+    const token = req?.cookies?.access_token;
+    const user = jwtHelpers.decodeUser(token, config.JWT_SECRET);
+
+    if (user.id === req.params.id) {
+      try {
+        const listing = await Listing.find({ userRef: user.id });
+        // console.log(listing);
+        res.status(200).json({
+          success: true,
+          statusCode: 200,
+          message: "successfully data fetch",
+          data: listing,
+        });
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      return next(new ApiError(401, "you can only view your own listings"));
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+

@@ -1,7 +1,7 @@
-import { config } from "../../../config/env.js";
-import { jwtHelpers } from "../../../helper/jwt.js";
-import ApiError from "../../middleware/ApiError.js";
 import Listing from "./listing.model.js";
+import ApiError from "../../middleware/ApiError.js";
+import { jwtHelpers } from "../../../helper/jwt.js";
+import { config } from "../../../config/env.js";
 
 export const createListing = async (req, res, next) => {
   try {
@@ -16,29 +16,26 @@ export const createListing = async (req, res, next) => {
     next(error);
   }
 };
-export const getUserListing = async (req, res, next) => {
+export const deleteListing = async (req, res, next) => {
   try {
+    
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(new ApiError(404, "Listing not found"));
+    }
+
     const token = req?.cookies?.access_token;
     const user = jwtHelpers.decodeUser(token, config.JWT_SECRET);
-    console.log("user id ",user.id , "params id", req.params.id);
-    if (user.id === req.params.id) {
-      try {
-        const listing = await Listing.find({ userRef: user.id });
-        // console.log(listing);
-        res
-          .status(200)
-          .json({
-            success: true,
-            statusCode: 200,
-            message: "successfull data fetch",
-            data: listing,
-          });
-      } catch (error) {
-        next(error);
-      }
-    } else {
-      return next(new ApiError(401, "you can only view your own listings"));
+
+    if (user.id !== listing.userRef) {
+      return next(new ApiError(403, "Forbidden"));
     }
+    await Listing.findByIdAndDelete(req.params.id);
+    return res.status(201).json({
+      success: true,
+      statuCode: 200,
+      message: "delete successfully",
+    });
   } catch (error) {
     next(error);
   }
