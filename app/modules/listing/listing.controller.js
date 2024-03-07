@@ -18,7 +18,6 @@ export const createListing = async (req, res, next) => {
 };
 export const deleteListing = async (req, res, next) => {
   try {
-    
     const listing = await Listing.findById(req.params.id);
     if (!listing) {
       return next(new ApiError(404, "Listing not found"));
@@ -35,6 +34,37 @@ export const deleteListing = async (req, res, next) => {
       success: true,
       statuCode: 200,
       message: "delete successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateListing = async (req, res, next) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(new ApiError(404, "Listing not found"));
+    }
+
+    const token = req?.cookies?.access_token;
+    const user = jwtHelpers.decodeUser(token, config.JWT_SECRET);
+
+    if (user.id !== listing.userRef) {
+      return next(new ApiError(403, "Forbidden"));
+    }
+    
+    const updateListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    return res.status(201).json({
+      success: true,
+      statuCode: 200,
+      message: "updated  listing",
+      data: updateListing,
     });
   } catch (error) {
     next(error);
