@@ -84,7 +84,7 @@ export const getUserListing = async (req, res, next) => {
     if (user.id === req.params.id) {
       try {
         const listing = await Listing.find({ userRef: user.id });
-        // console.log(listing);
+
         res.status(200).json({
           success: true,
           statusCode: 200,
@@ -101,4 +101,22 @@ export const getUserListing = async (req, res, next) => {
     next(error);
   }
 };
+export const getUser = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
 
+    if (!user) return next(new ApiError(404, "User not found!"));
+
+    // eslint-disable-next-line no-unused-vars
+    const { password: pass, ...rest } = user._doc;
+
+    res.status(200).json({
+      success: true,
+      statusCode: 200,
+      message: "successfully data fetch",
+      data: rest,
+    });
+  } catch (error) {
+    next(error);
+  }
+};

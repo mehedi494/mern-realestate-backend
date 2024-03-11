@@ -16,10 +16,10 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    avatar:{
+    avatar: {
       type: String,
-      default:"https://cours-informatique-gratuit.fr/wp-content/uploads/2017/10/avatar.png"
-    }
+      default: "https://api.dicebear.com/7.x/fun-emoji/svg",
+    },
   },
   { timestamps: true }
 );
