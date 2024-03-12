@@ -7,9 +7,9 @@ router.post("/", verifieUser, createListing);
 router.delete("/delete/:id", verifieUser, deleteListing);
 router.post("/update/:id", verifieUser, updateListing);
 
-// getsing listing
+// getsinglr listing
 router.get('/get/:id', getListing);
-// getListing for all users
-router.get("/:id",  getAllListing);
+// getListings for all users
+router.get("/",  getAllListing);
 
 export const listingRoutes = router;
