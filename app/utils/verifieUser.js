@@ -7,7 +7,8 @@ export const verifieUser = async (req, res, next) => {
   try {
    
     const token = req?.cookies?.access_token;
-    
+    // eslint-disable-next-line no-console
+    console.log(token);
    
     if (!token) throw new ApiError(401, "unauthorized");
     const verifiedToken = jwtHelpers.verifyToken(token, config.JWT_SECRET);

@@ -44,7 +44,7 @@ export const sign_in = async (req, res, next) => {
     // console.log("token", token);
     const cookieOptions = {
       expires: new Date(Date.now() + 100 * 24 * 60 * 60 * 1000),
-      // httpOnly: true,
+      httpOnly: true,
     };
     res.cookie("access_token", token, cookieOptions);
     res.status(200).json(userWithoutPassword);
