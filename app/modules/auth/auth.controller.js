@@ -34,7 +34,7 @@ export const sign_in = async (req, res, next) => {
     const token = jwtHelpers.createToken(
       { id: user._id },
       config.JWT_SECRET,
-      { expiresIn: config.JWT_EXPIRES_IN } // Pass expiresIn as an object
+      config.JWT_EXPIRES_IN // Pass expiresIn as an object
     );
 
     const userWithoutPassword = {
@@ -43,9 +43,9 @@ export const sign_in = async (req, res, next) => {
     };
 
     const cookieOptions = {
-      expires: config.JWT_EXPIRES_IN, // Convert expiresIn to milliseconds
+      // Convert expiresIn to milliseconds
       httpOnly: true,
-      path: "/", 
+      path: "/",
     };
 
     res.cookie("access_token", token, cookieOptions);
@@ -69,9 +69,8 @@ export const googleSignIn = async (req, res, next) => {
         password: undefined,
       };
       const cookieOptions = {
-        expires: config.JWT_EXPIRES_IN, // Convert expiresIn to milliseconds
         httpOnly: true,
-        path: "/", 
+        path: "/",
       };
       res
         .cookie("access_token", token, cookieOptions)
@@ -102,8 +101,14 @@ export const googleSignIn = async (req, res, next) => {
         ...newUser.toObject(),
         password: undefined,
       };
-
-      res.cookie("access_token", token).status(200).json(userWithoutPassword);
+      const cookieOptions = {
+        httpOnly: true,
+        path: "/",
+      };
+      res
+        .cookie("access_token", token, cookieOptions)
+        .status(200)
+        .json(userWithoutPassword);
     }
   } catch (error) {
     next(error);
