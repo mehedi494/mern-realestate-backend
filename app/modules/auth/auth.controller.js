@@ -4,6 +4,11 @@ import { jwtHelpers } from "../../../helper/jwt.js";
 import ApiError from "../../middleware/ApiError.js";
 import User from "../users/user.model.js";
 
+const cookieOptions = {
+  expires: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+  httpOnly: true,
+};
+
 export const sign_up = async (req, res, next) => {
   // eslint-disable-next-line no-console
   try {
@@ -42,13 +47,14 @@ export const sign_in = async (req, res, next) => {
       password: undefined,
     };
 
-  /*   const cookieOptions = {
-      // Convert expiresIn to milliseconds
-      httpOnly: true,
-      path: "/",
-    }; */
+    // const cookieOptions = {
+    //   expires: new Date(
+    //     Date.now() + 10 * 24 * 60 * 60 * 1000
+    //   ),
+    //   // httpOnly: true,
+    // };
 
-    res.cookie("access_token", token);
+    res.cookie("access_token", token, cookieOptions);
     res.status(200).json(userWithoutPassword);
   } catch (error) {
     next(error);
@@ -68,12 +74,12 @@ export const googleSignIn = async (req, res, next) => {
         ...existUser.toObject(),
         password: undefined,
       };
-     /*  const cookieOptions = {
+      /*  const cookieOptions = {
         httpOnly: true,
         path: "/",
       }; */
       res
-        .cookie("access_token", token, )
+        .cookie("access_token", token, cookieOptions)
         .status(200)
         .json(userWithoutPassword);
     } else {
@@ -105,10 +111,7 @@ export const googleSignIn = async (req, res, next) => {
         httpOnly: true,
         path: "/",
       }; */
-      res
-        .cookie("access_token", token)
-        .status(200)
-        .json(userWithoutPassword);
+      res.cookie("access_token", token).status(200).json(userWithoutPassword);
     }
   } catch (error) {
     next(error);
