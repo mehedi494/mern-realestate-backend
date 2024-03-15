@@ -34,18 +34,20 @@ export const sign_in = async (req, res, next) => {
     const token = jwtHelpers.createToken(
       { id: user._id },
       config.JWT_SECRET,
-      config.JWT_EXPIRES_IN
+      { expiresIn: config.JWT_EXPIRES_IN } // Pass expiresIn as an object
     );
 
     const userWithoutPassword = {
       ...user.toObject(),
       password: undefined,
     };
-    // console.log("token", token);
+
     const cookieOptions = {
-      expires: new Date(Date.now() + 100 * 24 * 60 * 60 * 1000),
+      expires: config.JWT_EXPIRES_IN, // Convert expiresIn to milliseconds
       httpOnly: true,
+      path: "/", 
     };
+
     res.cookie("access_token", token, cookieOptions);
     res.status(200).json(userWithoutPassword);
   } catch (error) {
@@ -66,8 +68,15 @@ export const googleSignIn = async (req, res, next) => {
         ...existUser.toObject(),
         password: undefined,
       };
-
-      res.cookie("access_token", token).status(200).json(userWithoutPassword);
+      const cookieOptions = {
+        expires: config.JWT_EXPIRES_IN, // Convert expiresIn to milliseconds
+        httpOnly: true,
+        path: "/", 
+      };
+      res
+        .cookie("access_token", token, cookieOptions)
+        .status(200)
+        .json(userWithoutPassword);
     } else {
       const generatedUserName =
         req.body.name.split(" ").join("-").toLowerCase() +
