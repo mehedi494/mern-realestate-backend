@@ -42,13 +42,13 @@ export const sign_in = async (req, res, next) => {
       password: undefined,
     };
 
-    const cookieOptions = {
+  /*   const cookieOptions = {
       // Convert expiresIn to milliseconds
       httpOnly: true,
       path: "/",
-    };
+    }; */
 
-    res.cookie("access_token", token, cookieOptions);
+    res.cookie("access_token", token);
     res.status(200).json(userWithoutPassword);
   } catch (error) {
     next(error);
@@ -68,12 +68,12 @@ export const googleSignIn = async (req, res, next) => {
         ...existUser.toObject(),
         password: undefined,
       };
-      const cookieOptions = {
+     /*  const cookieOptions = {
         httpOnly: true,
         path: "/",
-      };
+      }; */
       res
-        .cookie("access_token", token, cookieOptions)
+        .cookie("access_token", token, )
         .status(200)
         .json(userWithoutPassword);
     } else {
@@ -101,12 +101,12 @@ export const googleSignIn = async (req, res, next) => {
         ...newUser.toObject(),
         password: undefined,
       };
-      const cookieOptions = {
+      /* const cookieOptions = {
         httpOnly: true,
         path: "/",
-      };
+      }; */
       res
-        .cookie("access_token", token, cookieOptions)
+        .cookie("access_token", token)
         .status(200)
         .json(userWithoutPassword);
     }
